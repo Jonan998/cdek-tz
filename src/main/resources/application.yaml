@@ -1,3 +1,43 @@
 spring:
   application:
     name: TaskTimeTracker
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  session:
+    store-type: none
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 1
+    locations: classpath:db/migration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+#resilience4j:
+#  ratelimiter:
+#    configs:
+#      default:
+#        limitForPeriod: 10
+#        limitRefreshPeriod: 1m
+#        timeoutDuration: 0
+app:
+  jwt:
+    secret: "supersecretkeysupersecretkey123456"
+    expirationMillis: 2592000000
+#  rate-limit:
+#    retry-after-seconds: 10
+#    message: "Слишком много запросов"
