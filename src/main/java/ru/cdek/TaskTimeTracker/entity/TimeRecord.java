@@ -1,5 +1,6 @@
 package ru.cdek.TaskTimeTracker.entity;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -9,10 +10,12 @@ import org.hibernate.annotations.UuidGenerator;
 @Entity
 @Table(name = "time_record")
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@Builder
+@SuppressFBWarnings(
+        value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
+        justification = "JPA entity intentionally exposes mutable associations for ORM mapping"
+)
 public class TimeRecord {
 
   @Id @GeneratedValue @UuidGenerator private UUID id;

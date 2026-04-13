@@ -1,18 +1,35 @@
 package ru.cdek.TaskTimeTracker.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
 import ru.cdek.TaskTimeTracker.dto.TaskDto;
 import ru.cdek.TaskTimeTracker.entity.Task;
 import ru.cdek.TaskTimeTracker.entity.TaskStatus;
 
-@Mapper(componentModel = "spring", imports = TaskStatus.class)
-public interface TaskMapper {
+@Component
+public class TaskMapper {
 
-  TaskDto toDto(Task task);
+    public TaskDto toDto(Task task) {
+        if (task == null) {
+            return null;
+        }
 
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "status", expression = "java(TaskStatus.NEW)")
-  @Mapping(target = "timeRecords", ignore = true)
-  Task toEntity(TaskDto taskDto);
+        return TaskDto.builder()
+                .id(task.getId())
+                .title(task.getTitle())
+                .description(task.getDescription())
+                .status(task.getStatus())
+                .build();
+    }
+
+    public Task toEntity(TaskDto taskDto) {
+        if (taskDto == null) {
+            return null;
+        }
+
+        Task task = new Task();
+        task.setTitle(taskDto.getTitle());
+        task.setDescription(taskDto.getDescription());
+        task.setStatus(TaskStatus.NEW);
+        return task;
+    }
 }

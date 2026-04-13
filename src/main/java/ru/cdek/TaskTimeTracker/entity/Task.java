@@ -11,11 +11,14 @@ import org.hibernate.annotations.UuidGenerator;
 
 @Entity
 @Table(name = "task")
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@Builder
+@SuppressFBWarnings(
+        value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
+        justification = "JPA entity intentionally exposes mutable associations for ORM mapping"
+)
 public class Task {
 
   @Id @GeneratedValue @UuidGenerator private UUID id;
@@ -32,9 +35,5 @@ public class Task {
 
   @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonIgnore
-  @Builder.Default
-  @SuppressFBWarnings(
-      value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
-      justification = "JPA entity intentionally exposes mutable state for ORM mapping")
   private List<TimeRecord> timeRecords = new ArrayList<>();
 }
