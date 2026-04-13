@@ -8,12 +8,10 @@ import ru.cdek.TaskTimeTracker.repository.TaskRepository;
 
 @Service
 public class TaskServiceImpl implements TaskService {
-  private final Task task;
   private final TaskRepository taskRepository;
   private final TaskMapper taskMapper;
 
-  public TaskServiceImpl(Task task, TaskRepository taskRepository, TaskMapper taskMapper) {
-    this.task = task;
+  public TaskServiceImpl(TaskRepository taskRepository, TaskMapper taskMapper) {
     this.taskRepository = taskRepository;
     this.taskMapper = taskMapper;
   }
