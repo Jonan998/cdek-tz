@@ -13,9 +13,8 @@ import org.hibernate.annotations.UuidGenerator;
 @Getter
 @Setter
 @SuppressFBWarnings(
-        value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
-        justification = "JPA entity intentionally exposes mutable associations for ORM mapping"
-)
+    value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
+    justification = "JPA entity intentionally exposes mutable associations for ORM mapping")
 public class TimeRecord {
 
   @Id @GeneratedValue @UuidGenerator private UUID id;
