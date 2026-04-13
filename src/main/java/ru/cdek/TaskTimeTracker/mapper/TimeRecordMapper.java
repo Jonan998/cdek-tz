@@ -13,6 +13,10 @@ public interface TimeRecordMapper {
   TimeRecordDto toDto(TimeRecord entity);
 
   @Mapping(target = "id", ignore = true)
+  @Mapping(target = "employeeId", source = "dto.employeeId")
+  @Mapping(target = "startTime", source = "dto.startTime")
+  @Mapping(target = "endTime", source = "dto.endTime")
+  @Mapping(target = "description", source = "dto.description")
   @Mapping(target = "task", source = "task")
   TimeRecord toEntity(TimeRecordDto dto, Task task);
 }

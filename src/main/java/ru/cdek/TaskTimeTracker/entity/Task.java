@@ -9,23 +9,24 @@ import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 @Entity
-@Table(name = "Task")
+@Table(name = "task")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
 public class Task {
+
   @Id @GeneratedValue @UuidGenerator private UUID id;
 
-  @Column(name = "Title", nullable = false)
+  @Column(nullable = false)
   private String title;
 
-  @Column(name = "Description", nullable = false)
+  @Column(nullable = false)
   private String description;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "Status", nullable = false)
+  @Column(nullable = false)
   private TaskStatus status;
 
   @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)

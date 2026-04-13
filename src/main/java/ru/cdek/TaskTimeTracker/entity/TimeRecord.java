@@ -7,28 +7,29 @@ import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 @Entity
-@Table(name = "TimeRecord")
+@Table(name = "time_record")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
 public class TimeRecord {
+
   @Id @GeneratedValue @UuidGenerator private UUID id;
 
-  @Column(name = "EmployeeId", nullable = false)
+  @Column(name = "employee_id", nullable = false)
   private Long employeeId;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "taskId", nullable = false)
+  @JoinColumn(name = "task_id", nullable = false)
   private Task task;
 
-  @Column(name = "StartTime", nullable = false)
+  @Column(name = "start_time", nullable = false)
   private LocalDateTime startTime;
 
-  @Column(name = "EndTime", nullable = false)
+  @Column(name = "end_time", nullable = false)
   private LocalDateTime endTime;
 
-  @Column(name = "Description", nullable = false)
+  @Column(nullable = false)
   private String description;
 }
