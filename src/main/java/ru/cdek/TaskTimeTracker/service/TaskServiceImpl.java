@@ -8,9 +8,9 @@ import ru.cdek.TaskTimeTracker.mapper.TaskMapper;
 import ru.cdek.TaskTimeTracker.repository.TaskRepository;
 
 @Service
-@SuppressFBWarnings(
-    value = "EI_EXPOSE_REP2",
-    justification = "Spring injects shared mapper bean intentionally")
+//@SuppressFBWarnings(
+//    value = "EI_EXPOSE_REP2",
+//    justification = "Spring injects shared mapper bean intentionally")
 public class TaskServiceImpl implements TaskService {
   private final TaskRepository taskRepository;
   private final TaskMapper taskMapper;
