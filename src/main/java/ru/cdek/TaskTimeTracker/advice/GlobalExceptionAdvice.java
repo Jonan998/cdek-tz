@@ -3,10 +3,13 @@ package ru.cdek.TaskTimeTracker.advice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.cdek.TaskTimeTracker.dto.ErrorResponse;
 import ru.cdek.TaskTimeTracker.exception.InvalidCredentialsException;
+import ru.cdek.TaskTimeTracker.exception.TaskAccessDeniedException;
 import ru.cdek.TaskTimeTracker.exception.UserAlreadyExistsException;
 
 @Slf4j
@@ -32,6 +35,25 @@ public class GlobalExceptionAdvice {
     log.warn("Unauthorized: {}", ex.getMessage());
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
         .body(new ErrorResponse("invalid_credentials", ex.getMessage()));
+  }
+
+  @ExceptionHandler(TaskAccessDeniedException.class)
+  public ResponseEntity<ErrorResponse> handleTaskAccessDenied(TaskAccessDeniedException ex) {
+    log.warn("Forbidden: {}", ex.getMessage());
+    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        .body(new ErrorResponse("forbidden", ex.getMessage()));
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ErrorResponse handleValidationException(MethodArgumentNotValidException ex) {
+    String message =
+        ex.getBindingResult().getFieldErrors().stream()
+            .map(error -> error.getField() + ": " + error.getDefaultMessage())
+            .findFirst()
+            .orElse("Некорректные данные запроса");
+
+    return new ErrorResponse("bad_request", message);
   }
 
   @ExceptionHandler(Exception.class)
