@@ -1,6 +1,5 @@
 package ru.cdek.TaskTimeTracker.service;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.stereotype.Service;
 import ru.cdek.TaskTimeTracker.dto.TaskDto;
 import ru.cdek.TaskTimeTracker.entity.Task;
@@ -8,9 +7,9 @@ import ru.cdek.TaskTimeTracker.mapper.TaskMapper;
 import ru.cdek.TaskTimeTracker.repository.TaskRepository;
 
 @Service
-@SuppressFBWarnings(
-    value = "EI_EXPOSE_REP2",
-    justification = "Spring injects shared mapper bean intentionally")
+// @SuppressFBWarnings(
+//    value = "EI_EXPOSE_REP2",
+//    justification = "Spring injects shared mapper bean intentionally")
 public class TaskServiceImpl implements TaskService {
   private final TaskRepository taskRepository;
   private final TaskMapper taskMapper;
