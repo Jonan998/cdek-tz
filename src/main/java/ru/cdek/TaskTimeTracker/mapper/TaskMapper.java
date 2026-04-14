@@ -9,12 +9,12 @@ import ru.cdek.TaskTimeTracker.entity.TaskStatus;
 @Mapper(componentModel = "spring", imports = TaskStatus.class)
 public interface TaskMapper {
 
-    TaskDto toDto(Task entity);
+  TaskDto toDto(Task entity);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "title", source = "dto.title")
-    @Mapping(target = "description", source = "dto.description")
-    @Mapping(target = "status", expression = "java(TaskStatus.NEW)")
-    @Mapping(target = "timeRecords", ignore = true)
-    Task toEntity(TaskDto dto);
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "title", source = "dto.title")
+  @Mapping(target = "description", source = "dto.description")
+  @Mapping(target = "status", expression = "java(TaskStatus.NEW)")
+  @Mapping(target = "timeRecords", ignore = true)
+  Task toEntity(TaskDto dto);
 }
