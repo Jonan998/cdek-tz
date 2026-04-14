@@ -18,7 +18,7 @@ import ru.cdek.TaskTimeTracker.config.JwtFilter;
 import ru.cdek.TaskTimeTracker.dto.AuthResponse;
 import ru.cdek.TaskTimeTracker.dto.LoginRequest;
 import ru.cdek.TaskTimeTracker.dto.RegisterRequest;
-import ru.cdek.TaskTimeTracker.service.AuthService;
+import ru.cdek.TaskTimeTracker.service.AuthServiceImpl;
 
 @WebMvcTest(AuthController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -28,7 +28,7 @@ class AuthControllerTest {
 
   @Autowired private ObjectMapper objectMapper;
 
-  @MockBean private AuthService authService;
+  @MockBean private AuthServiceImpl authService;
 
   @MockBean private JwtFilter jwtFilter;
 
