@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.cdek.TaskTimeTracker.dto.ErrorResponse;
 import ru.cdek.TaskTimeTracker.exception.*;
 
@@ -74,6 +75,19 @@ public class GlobalExceptionAdvice {
   public ErrorResponse handleTaskNotFound(TaskNotFoundException ex) {
     log.warn("Not found: {}", ex.getMessage());
     return new ErrorResponse("task_not_found", ex.getMessage());
+  }
+
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatch(
+      MethodArgumentTypeMismatchException ex) {
+
+    String message = "Некорректное значение параметра: " + ex.getName();
+
+    if (ex.getRequiredType() != null && ex.getRequiredType().isEnum()) {
+      message = "Некорректный статус. Допустимые значения: NEW, IN_PROGRESS, DONE";
+    }
+
+    return ResponseEntity.badRequest().body(new ErrorResponse("Некоректные данные", message));
   }
 
   @ExceptionHandler(Exception.class)
