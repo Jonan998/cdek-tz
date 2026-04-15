@@ -24,7 +24,7 @@ public class TaskServiceImpl implements TaskService {
   private final TaskMapper taskMapper;
 
   @Override
-  public void createTask(UUID userId, TaskDto taskDto) {
+  public TaskDto createTask(UUID userId, TaskDto taskDto) {
     log.info("Создание задачи: userId={}, title={}", userId, taskDto.getTitle());
     User user =
         userRepository
@@ -42,6 +42,8 @@ public class TaskServiceImpl implements TaskService {
     Task savedTask = taskRepository.save(task);
 
     log.info("Задача успешно создана: taskId={}, userId={}", savedTask.getId(), userId);
+
+    return taskMapper.toDto(savedTask);
   }
 
   @Override

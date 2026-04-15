@@ -1,0 +1,302 @@
+{
+  "info": {
+    "_postman_id": "2e43d166-6674-4348-9a63-96eeb8a56d97",
+    "name": "TaskTimeTracker",
+    "description": "Коллекция для проверки TaskTimeTracker: auth, tasks, time-records.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "50293192",
+    "_collection_link": "https://go.postman.co/collection/50293192-2e43d166-6674-4348-9a63-96eeb8a56d97?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 or 201 or 409', function () {",
+                  "    pm.expect([200, 201, 409]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "if (pm.response.code !== 409) {",
+                  "    try {",
+                  "        const json = pm.response.json();",
+                  "        if (json.token) {",
+                  "            pm.collectionVariables.set('token', json.token);",
+                  "        }",
+                  "    } catch (e) {}",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Регистрация пользователя. Если пользователь уже существует, ожидается 409."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (json.token) {",
+                  "    pm.collectionVariables.set('token', json.token);",
+                  "}",
+                  "pm.test('Token saved', function () {",
+                  "    pm.expect(pm.collectionVariables.get('token')).to.not.be.empty;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Авторизация пользователя. JWT автоматически сохраняется в переменную token."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "Create Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Реализовать создание задачи\",\n  \"description\": \"Нужно добавить возможность создания задачи через REST API\",\n  \"status\": \"NEW\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tasks/create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                "create"
+              ]
+            },
+            "description": "Создание задачи. В текущей реализации taskId, если не возвращается в response body, нужно взять из логов приложения или из БД и вручную положить в переменную taskId."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Task By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/get/{{taskId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                "get",
+                "{{taskId}}"
+              ]
+            },
+            "description": "Получение задачи по id. Перед выполнением заполни переменную taskId."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Task Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/{{taskId}}/status?status=IN_PROGRESS",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                "{{taskId}}",
+                "status"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "IN_PROGRESS"
+                }
+              ]
+            },
+            "description": "Обновление статуса задачи. Возможные значения status зависят от enum TaskStatus."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Time Records",
+      "item": [
+        {
+          "name": "Create Time Record",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"taskId\": \"{{taskId}}\",\n  \"startTime\": \"2026-04-15T10:00:00\",\n  \"endTime\": \"2026-04-15T12:30:00\",\n  \"description\": \"Работал над задачей\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/time-records/create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "time-records",
+                "create"
+              ]
+            },
+            "description": "Создание записи времени. employeeId не передаётся, он берётся из JWT."
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Time Records By Period",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/time-records/get?start=2026-04-01T00:00:00&end=2026-04-30T23:59:59",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "time-records",
+                "get"
+              ],
+              "query": [
+                {
+                  "key": "start",
+                  "value": "2026-04-01T00:00:00"
+                },
+                {
+                  "key": "end",
+                  "value": "2026-04-30T23:59:59"
+                }
+              ]
+            },
+            "description": "Получение записей времени текущего пользователя за период."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "taskId",
+      "value": ""
+    },
+    {
+      "key": "username",
+      "value": "petrovich"
+    },
+    {
+      "key": "password",
+      "value": "Password123!"
+    }
+  ]
+}

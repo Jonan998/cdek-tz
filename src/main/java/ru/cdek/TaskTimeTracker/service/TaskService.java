@@ -5,7 +5,7 @@ import ru.cdek.TaskTimeTracker.dto.TaskDto;
 import ru.cdek.TaskTimeTracker.entity.TaskStatus;
 
 public interface TaskService {
-  void createTask(UUID userId, TaskDto task);
+  TaskDto createTask(UUID userId, TaskDto taskDto);
 
   TaskDto getTask(UUID userId, UUID taskId);
 
