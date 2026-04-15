@@ -134,7 +134,7 @@ docker-compose -f docker-compose.dev.yml up --build
  - 👉 grafana : http://localhost:3000
  - 👉 prometheus: http://localhost:9090
 
-3. Swagger
+Swagger
 
  - 👉 http://localhost:8080/swagger-ui.html
 
