@@ -121,11 +121,9 @@ REST-сервис для учёта рабочего времени сотруд
 ### 1. Клонирование
 ```bash
 git clone https://github.com/your-repo/task-time-tracker.git
-cd task-time-tracker
 
 ### 2. Запуск (через Docker)
 
-```bash
 docker-compose -f docker-compose.dev.yml up --build
 
 Приложение будет доступно по адресу:
