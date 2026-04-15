@@ -128,15 +128,15 @@ git clone https://github.com/Jonan998/cdek-tz.git
 docker-compose -f docker-compose.dev.yml up --build
 
 Приложение будет доступно по адресу:
-👉 - http://localhost:8080
+ - 👉 http://localhost:8080
 
 Метрики
-👉 - grafana : http://localhost:3000
-👉 - prometheus: http://localhost:9090
+ - 👉 grafana : http://localhost:3000
+ - 👉 prometheus: http://localhost:9090
 
 3. Swagger
 
-👉 http://localhost:8080/swagger-ui.html
+ - 👉 http://localhost:8080/swagger-ui.html
 
 ---
 
