@@ -119,7 +119,6 @@ REST-сервис для учёта рабочего времени сотруд
 ## 🚀 Запуск проекта
 
 ### 1. Клонирование
-```bash
 git clone https://github.com/your-repo/task-time-tracker.git
 
 ### 2. Запуск (через Docker)
