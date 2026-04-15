@@ -130,7 +130,7 @@ docker-compose -f docker-compose.dev.yml up --build
 Приложение будет доступно по адресу:
  - 👉 http://localhost:8080
 
-Метрики
+Метрики (собрал немного технических)
  - 👉 grafana : http://localhost:3000
  - 👉 prometheus: http://localhost:9090
 
