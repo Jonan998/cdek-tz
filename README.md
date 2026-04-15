@@ -6,16 +6,15 @@ REST-сервис для учёта рабочего времени сотруд
 
 📌 Функциональность
 👤 Аутентификация
-Регистрация пользователя
-Авторизация (JWT)
-Stateless security
+ - Регистрация пользователя
+ - Авторизация (JWT)
 📋 Работа с задачами
-Создание задачи
-Получение задачи по ID (с проверкой владельца)
-Изменение статуса задачи (NEW / IN_PROGRESS / DONE)
+ - Создание задачи
+ - Получение задачи по ID (с проверкой владельца)
+ - Изменение статуса задачи (NEW / IN_PROGRESS / DONE)
 ⏱ Учёт времени
-Создание записи о затраченном времени
-Получение записей за период времени
+ - Создание записи о затраченном времени
+ - Получение записей за период времени
 🧱 Архитектура
 
 Проект построен по слоям:
@@ -23,66 +22,24 @@ Stateless security
 Controller → Service → Repository → DB
 
 Дополнительно:
-
-DTO + Mapper (MapStruct)
-Global Exception Handler
-JWT Filter
-Validation (Bean Validation)
+ - DTO + Mapper (MapStruct)
+ - Global Exception Handler
+ - JWT Filter
+ - Validation (Bean Validation)
 🔐 Безопасность
-Используется JWT-аутентификация
-Все эндпоинты (кроме /auth/**, /swagger/**) требуют токен
+ - Используется JWT-аутентификация
+ - Все эндпоинты (кроме /auth/**, /swagger/**) требуют токен
 Проверка доступа к задачам (нельзя получить/изменить чужую)
-📄 API Документация
+## 📬 API тестирование
 
-Swagger доступен по адресу:
+Для удобства тестирования в проекте приложена готовая коллекция Postman:
 
+📁 `TaskTimeTracker.postman_collection.json`
+
+Импортируйте её в Postman и используйте готовые запросы.
+
+Также API доступно через Swagger:
 http://localhost:8080/swagger-ui.html
-
-OpenAPI JSON:
-
-http://localhost:8080/v3/api-docs
-📬 Примеры запросов (Postman)
-🔐 Регистрация
-POST /auth/register
-Content-Type: application/json
-
-{
-  "username": "user",
-  "password": "password123"
-}
-🔑 Логин
-POST /auth/login
-
-{
-  "username": "user",
-  "password": "password123"
-}
-📋 Создание задачи
-POST /tasks
-Authorization: Bearer <token>
-
-{
-  "title": "Task 1",
-  "description": "Описание",
-  "status": "NEW"
-}
-📄 Получение задачи
-GET /tasks/{taskId}
-Authorization: Bearer <token>
-🔄 Обновление статуса
-PATCH /tasks/{taskId}/status?status=DONE
-Authorization: Bearer <token>
-⏱ Создание записи времени
-POST /time-records/create
-
-{
-  "taskId": "uuid",
-  "startTime": "2026-04-15T10:00:00",
-  "endTime": "2026-04-15T12:00:00",
-  "description": "Работа над задачей"
-}
-📊 Получение записей за период
-GET /time-records/get?start=2026-04-01T00:00:00&end=2026-04-30T23:59:59
 🗄 База данных
 
 Используется:
@@ -100,15 +57,7 @@ Flyway
 /actuator/health
 /actuator/metrics
 /actuator/prometheus
-📈 Prometheus
 
-Пример конфигурации:
-
-scrape_configs:
-  - job_name: 'task-time-tracker'
-    metrics_path: '/actuator/prometheus'
-    static_configs:
-      - targets: ['localhost:8080']
 🧪 Тестирование
 
 Реализованы:
