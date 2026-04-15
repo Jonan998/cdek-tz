@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.cdek.TaskTimeTracker.dto.ErrorResponse;
-import ru.cdek.TaskTimeTracker.exception.InvalidCredentialsException;
-import ru.cdek.TaskTimeTracker.exception.TaskAccessDeniedException;
-import ru.cdek.TaskTimeTracker.exception.UserAlreadyExistsException;
+import ru.cdek.TaskTimeTracker.exception.*;
 
 @Slf4j
 @RestControllerAdvice
@@ -28,6 +26,21 @@ public class GlobalExceptionAdvice {
     log.warn("Conflict: {}", ex.getMessage());
     return ResponseEntity.status(HttpStatus.CONFLICT)
         .body(new ErrorResponse("user_already_exists", ex.getMessage()));
+  }
+
+  @ExceptionHandler(InvalidTimeRangeException.class)
+  public ResponseEntity<ErrorResponse> handleInvalidTimeRangeException(
+      InvalidTimeRangeException ex) {
+    log.warn("Invalid_time_range: {}", ex.getMessage());
+    return ResponseEntity.status(HttpStatus.CONFLICT)
+        .body(new ErrorResponse("invalid_time_range", ex.getMessage()));
+  }
+
+  @ExceptionHandler(UserNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
+    log.warn("Not_found: {}", ex.getMessage());
+    return ResponseEntity.status(HttpStatus.CONFLICT)
+        .body(new ErrorResponse("user_not_found", ex.getMessage()));
   }
 
   @ExceptionHandler(InvalidCredentialsException.class)
@@ -54,6 +67,13 @@ public class GlobalExceptionAdvice {
             .orElse("Некорректные данные запроса");
 
     return new ErrorResponse("bad_request", message);
+  }
+
+  @ExceptionHandler(TaskNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public ErrorResponse handleTaskNotFound(TaskNotFoundException ex) {
+    log.warn("Not found: {}", ex.getMessage());
+    return new ErrorResponse("task_not_found", ex.getMessage());
   }
 
   @ExceptionHandler(Exception.class)

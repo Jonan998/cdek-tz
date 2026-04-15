@@ -2,7 +2,6 @@ package ru.cdek.TaskTimeTracker.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.*;
@@ -14,10 +13,6 @@ import lombok.*;
 @Builder
 public class TimeRecordDto {
   private UUID id;
-
-  @NotNull(message = "Id сотрудника обязателен")
-  @Positive(message = "Id сотрудника должен быть положительным")
-  private Long employeeId;
 
   @NotNull(message = "Id задачи обязателен")
   private UUID taskId;

@@ -10,5 +10,5 @@ import ru.cdek.TaskTimeTracker.entity.TimeRecord;
 @Repository
 public interface TimeRecordRepository extends JpaRepository<TimeRecord, UUID> {
   List<TimeRecord> findAllByEmployeeIdAndStartTimeGreaterThanEqualAndEndTimeLessThanEqual(
-      Long employeeId, LocalDateTime start, LocalDateTime end);
+      UUID employeeId, LocalDateTime start, LocalDateTime end);
 }

@@ -20,7 +20,7 @@ public class TimeRecord {
   @Id @GeneratedValue @UuidGenerator private UUID id;
 
   @Column(name = "employee_id", nullable = false)
-  private Long employeeId;
+  private UUID employeeId;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "task_id", nullable = false)

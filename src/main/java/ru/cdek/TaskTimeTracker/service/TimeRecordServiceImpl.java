@@ -2,6 +2,7 @@ package ru.cdek.TaskTimeTracker.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,10 +25,10 @@ public class TimeRecordServiceImpl implements TimeRecordService {
   private final TimeRecordMapper timeRecordMapper;
 
   @Override
-  public void createTimeRecord(TimeRecordDto timeRecordDto) {
+  public void createTimeRecord(UUID employeeId, TimeRecordDto timeRecordDto) {
     log.info(
         "Создание записи времени: employeeId={}, taskId={}, startTime={}, endTime={}",
-        timeRecordDto.getEmployeeId(),
+        employeeId,
         timeRecordDto.getTaskId(),
         timeRecordDto.getStartTime(),
         timeRecordDto.getEndTime());
@@ -35,7 +36,7 @@ public class TimeRecordServiceImpl implements TimeRecordService {
     if (timeRecordDto.getStartTime().isAfter(timeRecordDto.getEndTime())) {
       log.warn(
           "Некорректный интервал времени: employeeId={}, taskId={}, startTime={}, endTime={}",
-          timeRecordDto.getEmployeeId(),
+          employeeId,
           timeRecordDto.getTaskId(),
           timeRecordDto.getStartTime(),
           timeRecordDto.getEndTime());
@@ -52,17 +53,19 @@ public class TimeRecordServiceImpl implements TimeRecordService {
                 });
 
     TimeRecord timeRecord = timeRecordMapper.toEntity(timeRecordDto, task);
+    timeRecord.setEmployeeId(employeeId);
+
     timeRecordRepository.save(timeRecord);
 
     log.info(
         "Запись времени успешно создана: employeeId={}, taskId={}",
-        timeRecordDto.getEmployeeId(),
+        employeeId,
         timeRecordDto.getTaskId());
   }
 
   @Override
   public List<TimeRecordDto> getTimeRecord(
-      Long employeeId, LocalDateTime start, LocalDateTime end) {
+      UUID employeeId, LocalDateTime start, LocalDateTime end) {
     log.info("Получение записей времени: employeeId={}, start={}, end={}", employeeId, start, end);
 
     if (start.isAfter(end)) {

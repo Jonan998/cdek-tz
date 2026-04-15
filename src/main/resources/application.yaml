@@ -2,9 +2,9 @@ spring:
   application:
     name: TaskTimeTracker
   datasource:
-    url: jdbc:postgresql://localhost:5432/cdekDb
-    username: postgres
-    password: Azazazru228
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/cdekDb}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -35,5 +35,5 @@ management:
         "[http.server.requests]": true
 app:
   jwt:
-    secret: "supersecretkeysupersecretkey123456"
-    expirationMillis: 2592000000
+    secret: ${APP_JWT_SECRET:test-secret-key-for-local-run-1234567890}
+    expirationMillis: ${APP_JWT_EXPIRATION_MILLIS:2592000000}

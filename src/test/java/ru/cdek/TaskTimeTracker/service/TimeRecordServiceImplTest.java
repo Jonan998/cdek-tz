@@ -37,10 +37,10 @@ class TimeRecordServiceImplTest {
 
   @Test
   void createTimeRecord_shouldSaveSuccessfully() {
+    UUID employeeId = UUID.randomUUID();
     UUID taskId = UUID.randomUUID();
 
     TimeRecordDto dto = new TimeRecordDto();
-    dto.setEmployeeId(123L);
     dto.setTaskId(taskId);
     dto.setStartTime(LocalDateTime.of(2026, 4, 15, 10, 0));
     dto.setEndTime(LocalDateTime.of(2026, 4, 15, 12, 0));
@@ -53,7 +53,6 @@ class TimeRecordServiceImplTest {
     task.setStatus(TaskStatus.NEW);
 
     TimeRecord entity = new TimeRecord();
-    entity.setEmployeeId(123L);
     entity.setTask(task);
     entity.setStartTime(dto.getStartTime());
     entity.setEndTime(dto.getEndTime());
@@ -62,7 +61,9 @@ class TimeRecordServiceImplTest {
     when(taskRepository.findById(taskId)).thenReturn(Optional.of(task));
     when(timeRecordMapper.toEntity(dto, task)).thenReturn(entity);
 
-    timeRecordService.createTimeRecord(dto);
+    timeRecordService.createTimeRecord(employeeId, dto);
+
+    assertEquals(employeeId, entity.getEmployeeId());
 
     verify(taskRepository).findById(taskId);
     verify(timeRecordMapper).toEntity(dto, task);
@@ -71,10 +72,10 @@ class TimeRecordServiceImplTest {
 
   @Test
   void createTimeRecord_shouldThrowWhenTaskNotFound() {
+    UUID employeeId = UUID.randomUUID();
     UUID taskId = UUID.randomUUID();
 
     TimeRecordDto dto = new TimeRecordDto();
-    dto.setEmployeeId(123L);
     dto.setTaskId(taskId);
     dto.setStartTime(LocalDateTime.of(2026, 4, 15, 10, 0));
     dto.setEndTime(LocalDateTime.of(2026, 4, 15, 12, 0));
@@ -83,15 +84,17 @@ class TimeRecordServiceImplTest {
     when(taskRepository.findById(taskId)).thenReturn(Optional.empty());
 
     TaskNotFoundException ex =
-        assertThrows(TaskNotFoundException.class, () -> timeRecordService.createTimeRecord(dto));
+        assertThrows(
+            TaskNotFoundException.class, () -> timeRecordService.createTimeRecord(employeeId, dto));
 
     assertEquals("Задача не найдена", ex.getMessage());
   }
 
   @Test
   void createTimeRecord_shouldThrowWhenStartAfterEnd() {
+    UUID employeeId = UUID.randomUUID();
+
     TimeRecordDto dto = new TimeRecordDto();
-    dto.setEmployeeId(123L);
     dto.setTaskId(UUID.randomUUID());
     dto.setStartTime(LocalDateTime.of(2026, 4, 15, 13, 0));
     dto.setEndTime(LocalDateTime.of(2026, 4, 15, 12, 0));
@@ -99,13 +102,15 @@ class TimeRecordServiceImplTest {
 
     InvalidTimeRangeException ex =
         assertThrows(
-            InvalidTimeRangeException.class, () -> timeRecordService.createTimeRecord(dto));
+            InvalidTimeRangeException.class,
+            () -> timeRecordService.createTimeRecord(employeeId, dto));
 
     assertEquals("Время начала не может быть позже времени окончания", ex.getMessage());
   }
 
   @Test
   void getTimeRecord_shouldReturnList() {
+    UUID employeeId = UUID.randomUUID();
     LocalDateTime start = LocalDateTime.of(2026, 4, 1, 0, 0);
     LocalDateTime end = LocalDateTime.of(2026, 4, 30, 23, 59, 59);
 
@@ -114,7 +119,7 @@ class TimeRecordServiceImplTest {
 
     TimeRecord entity = new TimeRecord();
     entity.setId(UUID.randomUUID());
-    entity.setEmployeeId(123L);
+    entity.setEmployeeId(employeeId);
     entity.setTask(task);
     entity.setStartTime(LocalDateTime.of(2026, 4, 15, 10, 0));
     entity.setEndTime(LocalDateTime.of(2026, 4, 15, 12, 0));
@@ -122,7 +127,6 @@ class TimeRecordServiceImplTest {
 
     TimeRecordDto dto = new TimeRecordDto();
     dto.setId(entity.getId());
-    dto.setEmployeeId(123L);
     dto.setTaskId(task.getId());
     dto.setStartTime(entity.getStartTime());
     dto.setEndTime(entity.getEndTime());
@@ -130,27 +134,29 @@ class TimeRecordServiceImplTest {
 
     when(timeRecordRepository
             .findAllByEmployeeIdAndStartTimeGreaterThanEqualAndEndTimeLessThanEqual(
-                123L, start, end))
+                employeeId, start, end))
         .thenReturn(List.of(entity));
     when(timeRecordMapper.toDto(entity)).thenReturn(dto);
 
-    List<TimeRecordDto> result = timeRecordService.getTimeRecord(123L, start, end);
+    List<TimeRecordDto> result = timeRecordService.getTimeRecord(employeeId, start, end);
 
     assertEquals(1, result.size());
-    assertEquals(123L, result.get(0).getEmployeeId());
     assertEquals(task.getId(), result.get(0).getTaskId());
     assertEquals("Работа по задаче", result.get(0).getDescription());
+    assertEquals(entity.getStartTime(), result.get(0).getStartTime());
+    assertEquals(entity.getEndTime(), result.get(0).getEndTime());
   }
 
   @Test
   void getTimeRecord_shouldThrowWhenStartAfterEnd() {
+    UUID employeeId = UUID.randomUUID();
     LocalDateTime start = LocalDateTime.of(2026, 4, 30, 23, 59, 59);
     LocalDateTime end = LocalDateTime.of(2026, 4, 1, 0, 0);
 
     InvalidTimeRangeException ex =
         assertThrows(
             InvalidTimeRangeException.class,
-            () -> timeRecordService.getTimeRecord(123L, start, end));
+            () -> timeRecordService.getTimeRecord(employeeId, start, end));
 
     assertEquals("Начало периода не может быть позже конца периода", ex.getMessage());
   }
