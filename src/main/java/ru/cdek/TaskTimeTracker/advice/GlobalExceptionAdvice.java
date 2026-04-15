@@ -30,6 +30,7 @@ public class GlobalExceptionAdvice {
   }
 
   @ExceptionHandler(InvalidTimeRangeException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<ErrorResponse> handleInvalidTimeRangeException(
       InvalidTimeRangeException ex) {
     log.warn("Invalid_time_range: {}", ex.getMessage());
@@ -38,6 +39,7 @@ public class GlobalExceptionAdvice {
   }
 
   @ExceptionHandler(UserNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
   public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
     log.warn("Not_found: {}", ex.getMessage());
     return ResponseEntity.status(HttpStatus.CONFLICT)
