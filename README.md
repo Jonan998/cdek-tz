@@ -50,7 +50,7 @@ REST-сервис для учёта рабочего времени сотруд
 
 📁 `TaskTimeTracker.postman_collection.json`
 
-Импортируйте её в Postman и используйте готовые запросы.
+Импортируйте её в Postman и используйте готовые запросы(файл в репозитории).
 
 Также API доступно через Swagger:  
 👉 http://localhost:8080/swagger-ui.html  
@@ -108,6 +108,8 @@ REST-сервис для учёта рабочего времени сотруд
 
 ## 🧹 Качество кода
 
+Настроены пайпланы при создании PR
+
 Используются инструменты:
 
 - ✅ Checkstyle — стиль кода  
@@ -119,7 +121,7 @@ REST-сервис для учёта рабочего времени сотруд
 ## 🚀 Запуск проекта
 
 ### 1. Клонирование
-git clone https://github.com/your-repo/task-time-tracker.git
+git clone https://github.com/Jonan998/cdek-tz.git
 
 ### 2. Запуск (через Docker)
 
@@ -134,6 +136,8 @@ prometheus: http://localhost:9090
 3. Swagger
 
 👉 http://localhost:8080/swagger-ui.html
+
+---
 
 📦 Стек технологий
  - Java 17
