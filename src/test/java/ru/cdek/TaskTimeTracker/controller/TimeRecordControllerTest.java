@@ -29,6 +29,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.web.servlet.MockMvc;
 import ru.cdek.TaskTimeTracker.config.JwtFilter;
 import ru.cdek.TaskTimeTracker.dto.TimeRecordDto;
+import ru.cdek.TaskTimeTracker.security.UserPrincipal;
 import ru.cdek.TaskTimeTracker.service.TimeRecordService;
 
 @WebMvcTest(TimeRecordController.class)
@@ -40,8 +41,17 @@ class TimeRecordControllerTest {
 
   @MockBean private JwtFilter jwtFilter;
 
+  private UserPrincipal userPrincipal;
+
   @BeforeEach
   void setUp() throws Exception {
+    userPrincipal =
+        new UserPrincipal(
+            UUID.fromString("11111111-1111-1111-1111-111111111111"),
+            "test_user",
+            "password",
+            Collections.emptyList());
+
     doAnswer(
             invocation -> {
               ServletRequest request = invocation.getArgument(0);
@@ -59,7 +69,6 @@ class TimeRecordControllerTest {
     String requestBody =
         """
                 {
-                  "employeeId": 123,
                   "taskId": "52a7860b-2e0c-49de-800d-1e349905ac56",
                   "startTime": "2026-04-15T10:00:00",
                   "endTime": "2026-04-15T12:30:00",
@@ -74,12 +83,12 @@ class TimeRecordControllerTest {
                 .with(
                     authentication(
                         new UsernamePasswordAuthenticationToken(
-                            "test_user", null, Collections.emptyList())))
+                            userPrincipal, null, userPrincipal.getAuthorities())))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
         .andExpect(status().isCreated());
 
-    verify(timeRecordService).createTimeRecord(any(TimeRecordDto.class));
+    verify(timeRecordService).createTimeRecord(eq(userPrincipal.getId()), any(TimeRecordDto.class));
   }
 
   @Test
@@ -89,14 +98,13 @@ class TimeRecordControllerTest {
 
     TimeRecordDto dto = new TimeRecordDto();
     dto.setId(id);
-    dto.setEmployeeId(123L);
     dto.setTaskId(taskId);
     dto.setStartTime(LocalDateTime.of(2026, 4, 15, 10, 0));
     dto.setEndTime(LocalDateTime.of(2026, 4, 15, 12, 30));
     dto.setDescription("Реализовал создание задачи");
 
     when(timeRecordService.getTimeRecord(
-            eq(123L),
+            eq(userPrincipal.getId()),
             eq(LocalDateTime.of(2026, 4, 1, 0, 0)),
             eq(LocalDateTime.of(2026, 4, 30, 23, 59, 59))))
         .thenReturn(List.of(dto));
@@ -107,13 +115,11 @@ class TimeRecordControllerTest {
                 .with(
                     authentication(
                         new UsernamePasswordAuthenticationToken(
-                            "test_user", null, Collections.emptyList())))
-                .param("employeeId", "123")
+                            userPrincipal, null, userPrincipal.getAuthorities())))
                 .param("start", "2026-04-01T00:00:00")
                 .param("end", "2026-04-30T23:59:59"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].id").value(id.toString()))
-        .andExpect(jsonPath("$[0].employeeId").value(123))
         .andExpect(jsonPath("$[0].taskId").value(taskId.toString()))
         .andExpect(jsonPath("$[0].startTime").value("2026-04-15T10:00:00"))
         .andExpect(jsonPath("$[0].endTime").value("2026-04-15T12:30:00"))
@@ -121,6 +127,8 @@ class TimeRecordControllerTest {
 
     verify(timeRecordService)
         .getTimeRecord(
-            123L, LocalDateTime.of(2026, 4, 1, 0, 0), LocalDateTime.of(2026, 4, 30, 23, 59, 59));
+            userPrincipal.getId(),
+            LocalDateTime.of(2026, 4, 1, 0, 0),
+            LocalDateTime.of(2026, 4, 30, 23, 59, 59));
   }
 }

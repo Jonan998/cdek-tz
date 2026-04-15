@@ -4,10 +4,13 @@ import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.cdek.TaskTimeTracker.dto.TimeRecordDto;
+import ru.cdek.TaskTimeTracker.security.UserPrincipal;
 import ru.cdek.TaskTimeTracker.service.TimeRecordService;
 
 @RestController
@@ -21,15 +24,17 @@ public class TimeRecordController {
 
   @PostMapping(value = CREATE_PATH, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.CREATED)
-  public void createTimeRecord(@Valid @RequestBody TimeRecordDto timeRecordDto) {
-    timeRecordService.createTimeRecord(timeRecordDto);
+  public void createTimeRecord(
+      @AuthenticationPrincipal UserPrincipal user,
+      @Valid @RequestBody TimeRecordDto timeRecordDto) {
+    timeRecordService.createTimeRecord(user.getId(), timeRecordDto);
   }
 
   @GetMapping(value = GET_PATH)
   public List<TimeRecordDto> getEmployeeTimeRecordsByPeriod(
-      @RequestParam Long employeeId,
-      @RequestParam LocalDateTime start,
-      @RequestParam LocalDateTime end) {
-    return timeRecordService.getTimeRecord(employeeId, start, end);
+      @AuthenticationPrincipal UserPrincipal user,
+      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
+    return timeRecordService.getTimeRecord(user.getId(), start, end);
   }
 }
