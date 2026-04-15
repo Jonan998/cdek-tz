@@ -149,6 +149,7 @@ prometheus: http://localhost:9090
  - JUnit 5 + Mockito
  - Grafana + Prometheus
  - Docker
+
 ⭐ Дополнительно реализовано
  - JWT аутентификация
  - Валидация DTO
@@ -158,6 +159,7 @@ prometheus: http://localhost:9090
  - Метрики
  - CI/CD
  - Code quality инструменты
+
 📌 Примечание
 
 Проект спроектирован с учётом production-практик:
